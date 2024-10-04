@@ -44,6 +44,11 @@ class BotRouter {
         $this->add('after', $command, $controller, $method, $name);
     }
 
+    public function default($controller, $method)
+    {
+        $this->add('default', '', $controller, $method);
+    }
+
     public function only($key)
     {
         $this->routes[array_key_last($this->routes)]['middleware'] = $key; 
@@ -75,12 +80,24 @@ class BotRouter {
                 return (new $controller)->init($this->telegram, $this->user)->closeCommand($latest_stored_command)->$method($user_command);
             }
         }
+
+        $default_route = $this->findDefaultRoute();
+        if  ($default_route) {
+            $method = $default_route['method'];
+            return (new $default_route['controller'])->init($this->telegram, $this->user)->$method($user_command);
+        }
     }
 
 
     public function routes(): array
     {
         return $this->routes;
+    }
+
+    private function findDefaultRoute()
+    {
+        $found = array_filter($this->routes(), fn($item) => $item['type'] === 'default');
+        return array_shift($found);
     }
 
 }

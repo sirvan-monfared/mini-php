@@ -27,4 +27,27 @@ class User extends Model
         return (new Command)->latestUserActiveCommand($this->id);
     }
 
+    public function findOrCreateRequest(): Request
+    {
+        $request = (new Request)->activeRequestForUser($this->id);
+
+        if (! $request) {
+            $request = (new Request)->insert($this->id);
+        }
+
+        return $request;
+    }
+
+    public function ongoingChat(): ?Chat
+    {
+        return (new Chat)->ongoingForUser($this->id);
+    }
+
+    public function deleteLatestRequest(): void
+    {
+        $request = $this->findOrCreateRequest();
+
+        $request->delete();
+    }
+
 }
