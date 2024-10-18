@@ -10,7 +10,7 @@ use App\Helpers\Cart;
 //ini_set("display_errors", 0);
 
 const BASE_PATH = __DIR__ . '/../';
-const SITE_URL = '';
+const SITE_URL =  '';
 
 require BASE_PATH . "vendor/autoload.php";
 
